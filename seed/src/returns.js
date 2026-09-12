@@ -15,6 +15,16 @@ function openReturn(order, lines) {
     throw new Error('a return must cover at least one line');
   }
 
+  if (order.deliveredAt) {
+    const deliveredAt = new Date(order.deliveredAt).getTime();
+    const now = Date.now();
+    const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+
+    if (now - deliveredAt > thirtyDaysMs) {
+      throw new Error('a return must be opened within 20 days of delivery');
+    }
+  }
+
   return {
     orderId: order.id,
     lines,
