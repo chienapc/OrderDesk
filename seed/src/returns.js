@@ -15,8 +15,18 @@ function openReturn(order, lines) {
     throw new Error('a return must cover at least one line');
   }
 
+  // A return is not valid before the first delivery.
+  // The product decision is to cancel instead of returning stock that remains in the warehouse.
   if (!order.deliveredAt) {
     throw new Error('a return cannot be opened before delivery; cancel instead');
+  }
+
+  const deliveredAt = new Date(order.deliveredAt).getTime();
+  const now = Date.now();
+  const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+
+  if (now - deliveredAt > thirtyDaysMs) {
+    throw new Error('a return must be opened within 30 days of delivery');
   }
 
   return {
