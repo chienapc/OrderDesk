@@ -15,6 +15,10 @@ function openReturn(order, lines) {
     throw new Error('a return must cover at least one line');
   }
 
+  if (!order.deliveredAt) {
+    throw new Error('a return cannot be opened before delivery; cancel instead');
+  }
+
   return {
     orderId: order.id,
     lines,
